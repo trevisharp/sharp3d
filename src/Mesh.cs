@@ -1,6 +1,6 @@
 namespace Sharped;
 
-public record Mesh(Plane[] faces)
+public record Mesh(Face[] faces)
 {
-    
+
 }

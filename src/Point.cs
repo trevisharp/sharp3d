@@ -1,7 +1,7 @@
 namespace Sharped;
 
 /// <summary>
-/// Represents a 3 dimensional point with axes x, y and z.
+/// Represents a tridimensional point with axes x, y and z.
 /// </summary>
 public record Point(float x, float y, float z)
 {

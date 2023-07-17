@@ -1,7 +1,7 @@
 namespace Sharped;
 
 /// <summary>
-/// Represents a 3 dimensional vector with axes x, y and z.
+/// Represents a tridimensional vector with axes x, y and z.
 /// </summary>
 public record Vector(float x, float y, float z)
 {
