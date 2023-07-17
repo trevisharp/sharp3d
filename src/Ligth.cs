@@ -3,8 +3,7 @@ using System.Drawing;
 namespace Sharped;
 
 /// <summary>
-/// Represents a source of light in a 
+/// Represents a source of light with a 3 dimensional
+/// point as location, a rgb color and a force of light.
 /// </summary>
-/// <param name="p"></param>
-/// <returns></returns>
-public record Ligth(Point p, Color color);
+public record Ligth(Point p, Color color, float force);
