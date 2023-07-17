@@ -1,10 +1,13 @@
 namespace Sharped;
 
 /// <summary>
-/// Represents a 3-dimension vector.
+/// Represents a 3 dimensional vector with axes x, y and z.
 /// </summary>
 public record Vector(float x, float y, float z)
 {
+    public override string ToString()
+        => $"P = ({x:N3}, {y:N3}, {z:N3})";
+
     public static Vector operator +(Vector v)
         => new (v.x, v.y, v.z);
     

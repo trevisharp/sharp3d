@@ -1,7 +1,13 @@
 namespace Sharped;
 
+/// <summary>
+/// Represents a 3 dimensional point with axes x, y and z.
+/// </summary>
 public record Point(float x, float y, float z)
 {
+    public override string ToString()
+        => $"v = ({x:N3}, {y:N3}, {z:N3})";
+    
     public static Point operator +(Point p, Vector v)
         => new (p.x + v.x, p.y + v.y, p.z + v.z);
     
