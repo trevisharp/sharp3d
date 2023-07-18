@@ -5,6 +5,8 @@ namespace Sharped;
 /// </summary>
 public record Point(float x, float y, float z)
 {
+    
+
     public override string ToString()
         => $"v = ({x:N3}, {y:N3}, {z:N3})";
     
