@@ -57,12 +57,12 @@ public interface ITransformable<T>
         .RotateZ(cosa, sina)
         .Translate(x, y, z);
     
-    T RotateX(Point p, float cosa, float sina) =>
+    T RotateX(Vertex p, float cosa, float sina) =>
         RotateX(p.x, p.y, p.z, cosa, sina);
 
-    T RotateY(Point p, float cosa, float sina) =>
+    T RotateY(Vertex p, float cosa, float sina) =>
         RotateY(p.x, p.y, p.z, cosa, sina);
 
-    T RotateZ(Point p, float cosa, float sina) =>
+    T RotateZ(Vertex p, float cosa, float sina) =>
         RotateZ(p.x, p.y, p.z, cosa, sina);
 }
