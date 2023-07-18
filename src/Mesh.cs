@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Sharped;
 
 /// <summary>
@@ -38,5 +40,19 @@ public record Mesh(params Face[] faces) : ITransformable<Mesh>
         for (int i = 0; i < faces.Length; i++)
             faces[i] = faces[i].Translate(x, y, z);
         return this;
+    }
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine("Mesh [");
+
+        foreach (var face in faces)
+            sb.AppendLine(face.ToString());
+
+        sb.Append("]");
+
+        return sb.ToString();
     }
 }
