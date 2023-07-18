@@ -21,7 +21,7 @@ public record Point(float x, float y, float z) : ITransformable<Point>
         => new (x * cosa - y * sina, y * cosa + x * sina, z);
 
     public override string ToString()
-        => $"v = ({x:N3}, {y:N3}, {z:N3})";
+        => $"({x:N3}, {y:N3}, {z:N3})";
 
     public static Point operator +(Point p, Vector v)
         => new (p.x + v.x, p.y + v.y, p.z + v.z);

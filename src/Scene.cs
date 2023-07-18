@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Collections.Generic;
 
 namespace Sharped;
@@ -9,4 +10,9 @@ public class Scene
     public List<Mesh> Meshes { get; private set; } = new();
     public List<Ligth> Ligths { get; private set; } = new();
     public List<Cam> Cameras { get; private set; } = new();
+
+    public void Renderize(Graphics g, int width, int height)
+    {
+        
+    }
 }
