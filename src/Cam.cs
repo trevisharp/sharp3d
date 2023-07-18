@@ -29,7 +29,7 @@ public class Cam
         g = Graphics.FromImage(bmp);
     }
 
-    public void Render()
+    public void Render(Scene scene)
     {
 
     }

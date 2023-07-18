@@ -37,6 +37,14 @@ public record Vector(float x, float y, float z)
         => new (tuple.x, tuple.y, tuple.z);
     
     public static readonly Vector Empty;
+    public static readonly Vector i;
+    public static readonly Vector j;
+    public static readonly Vector k;
     static Vector()
-        => Empty = new(0, 0, 0);
+    {
+        Empty = new(0, 0, 0);
+        i = new(1, 0, 0);
+        j = new(0, 1, 0);
+        k = new(0, 0, 1);
+    }
 }

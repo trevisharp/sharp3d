@@ -3,13 +3,16 @@ using System.Windows.Forms;
 
 using Sharped;
 
-Scene scene = new Scene
-{
-    MainCamera = new Cam(Vertex.Origin, Vector.Empty, 0, 0, 0),
-    new (
-
+var cam = new Cam(Vertex.Origin, Vector.i, 5f, 640, 480);
+Scene scene = Scene.Create(
+    new Mesh(
+        new Face(
+            (10, 5, -5),
+            (10, 10, 0),
+            (10, 5, +5)
+        )
     )
-};
+);
 
 bool isRunning = true;
 
@@ -47,6 +50,8 @@ Application.Idle += delegate
 {
     while (isRunning)
     {
+        cam.Render(scene);
+        cam.Draw(g);
         Application.DoEvents();
     }
 };
