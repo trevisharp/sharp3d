@@ -1,16 +1,13 @@
-namespace tst;
+using System.Windows.Forms;
 
-static class Program
-{
-    /// <summary>
-    ///  The main entry point for the application.
-    /// </summary>
-    [STAThread]
-    static void Main()
-    {
-        // To customize application configuration such as set high DPI settings or default font,
-        // see https://aka.ms/applicationconfiguration.
-        ApplicationConfiguration.Initialize();
-        Application.Run(new Form1());
-    }    
-}
+ApplicationConfiguration.Initialize();
+
+var pb = new PictureBox();
+pb.Dock = DockStyle.Fill;
+
+var form = new Form();
+form.WindowState = FormWindowState.Maximized;
+form.FormBorderStyle = FormBorderStyle.None;
+form.Controls.Add(pb);
+
+Application.Run(form);
