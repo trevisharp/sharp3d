@@ -16,13 +16,23 @@ public interface ITransformable<T>
     T Translate(float x, float y, float z);
 
     /// <summary>
-    /// Rotate the object by a angle a in a axis (ax, ay, az) based in origin.
+    /// Rotate the object by a angle a in a X axis based in origin
     /// </summary>
-    /// <param name="ax">The x component of rotation axis</param>
-    /// <param name="ay">The y component of rotation axis</param>
-    /// <param name="az">The z component of rotation axis</param>
+    /// <param name="cosa">Cosine of the rotation angle</param>
+    /// <param name="sina">Sine of the rotation angle</param>
+    T RotateX(float cosa, float sina);
+
+    /// <summary>
+    /// Rotate the object by a angle a in a Y axis based in origin
+    /// </summary>
     /// <param name="a">The angle of rotation</param>
-    T Rotate(float ax, float ay, float az, float a);
+    T RotateY(float cosa, float sina);
+
+    /// <summary>
+    /// Rotate the object by a angle a in a Z axis based in origin
+    /// </summary>
+    /// <param name="a">The angle of rotation</param>
+    T RotateZ(float cosa, float sina);
 
     /// <summary>
     /// Scale the object based in the origin with (x, y, z) scale values
@@ -32,60 +42,27 @@ public interface ITransformable<T>
     /// <param name="z">The z component of scale</param>
     T Scale(float x, float y, float z);
 
-    /// <summary>
-    /// Rotate the object by a angle a in a axis (ax, ay, az) based in a point (x, y, z)
-    /// </summary>
-    /// <param name="x">The x component of rotation point</param>
-    /// <param name="y">The y component of rotation point</param>
-    /// <param name="z">The z component of rotation point</param>
-    /// <param name="ax">The x component of rotation axis</param>
-    /// <param name="ay">The y component of rotation axis</param>
-    /// <param name="az">The z component of rotation axis</param>
-    /// <param name="a">The angle of rotation</param>
-    T Rotate(float x, float y, float z, float ax, float ay, float az, float a) =>
+    T RotateX(float x, float y, float z, float cosa, float sina) =>
         Translate(-x, -y, -z)
-        .Rotate(ax, ay, az, a)
+        .RotateX(cosa, sina)
         .Translate(x, y, z);
 
-    T RotateX(float x, float y, float z, float a) =>
-        Rotate(x, y, z, 1, 0, 0, a);
+    T RotateY(float x, float y, float z, float cosa, float sina) =>
+        Translate(-x, -y, -z)
+        .RotateY(cosa, sina)
+        .Translate(x, y, z);
 
-    T RotateY(float x, float y, float z, float a) =>
-        Rotate(x, y, z, 0, 1, 0, a);
-
-    T RotateZ(float x, float y, float z, float a) =>
-        Rotate(x, y, z, 0, 0, 1, a);
+    T RotateZ(float x, float y, float z, float cosa, float sina) =>
+        Translate(-x, -y, -z)
+        .RotateZ(cosa, sina)
+        .Translate(x, y, z);
     
-    /// <summary>
-    /// Rotate the object by a angle a in a axis (ax, ay, az) based in a point (x, y, z)
-    /// </summary>
-    /// <param name="x">The x component of rotation point</param>
-    /// <param name="y">The y component of rotation point</param>
-    /// <param name="z">The z component of rotation point</param>
-    /// <param name="ax">The x component of rotation axis</param>
-    /// <param name="ay">The y component of rotation axis</param>
-    /// <param name="az">The z component of rotation axis</param>
-    /// <param name="a">The angle of rotation</param>
-    T Rotate(Point p, float ax, float ay, float az, float a) =>
-        Translate(-p.x, -p.y, -p.z)
-        .Rotate(ax, ay, az, a)
-        .Translate(p.x, p.y, p.z);
+    T RotateX(Point p, float cosa, float sina) =>
+        RotateX(p.x, p.y, p.z, cosa, sina);
 
-    T RotateX(Point p, float a) =>
-        Rotate(p.x, p.y, p.z, 1, 0, 0, a);
+    T RotateY(Point p, float cosa, float sina) =>
+        RotateY(p.x, p.y, p.z, cosa, sina);
 
-    T RotateY(Point p, float a) =>
-        Rotate(p.x, p.y, p.z, 0, 1, 0, a);
-
-    T RotateZ(Point p, float a) =>
-        Rotate(p.x, p.y, p.z, 0, 0, 1, a);
-
-    T RotateX(float a) =>
-        Rotate(0, 0, 0, 1, 0, 0, a);
-
-    T RotateY(float a) =>
-        Rotate(0, 0, 0, 0, 1, 0, a);
-
-    T RotateZ(float a) =>
-        Rotate(0, 0, 0, 0, 0, 1, a);
+    T RotateZ(Point p, float cosa, float sina) =>
+        RotateZ(p.x, p.y, p.z, cosa, sina);
 }
