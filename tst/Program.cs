@@ -64,6 +64,7 @@ form.Controls.Add(pb);
 
 Bitmap bmp = null;
 Graphics g = null;
+bool rotate = false;
 
 form.Load += delegate
 {
@@ -80,6 +81,10 @@ form.KeyDown += (o, e) =>
         case Keys.Escape:
             isRunning = false;
             Application.Exit();
+            break;
+        
+        case Keys.Space:
+            rotate = !rotate;
             break;
     }
 };
@@ -127,6 +132,12 @@ Application.Idle += delegate
         {
             desloc = null;
         }
+
+        if (rotate)
+            scene.Meshes[0].RotateZ(
+                MathF.Cos(0.1f),
+                MathF.Sin(0.1f)
+            );
 
         cam?.Render(scene);
         cam?.Draw(g);

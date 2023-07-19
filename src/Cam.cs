@@ -13,7 +13,7 @@ public class Cam
     private Vertex p;
     private Vector v;
     private Vector renderCenter;
-    
+    private float f;
     private Vector n;
     private Vector m;
 
@@ -35,7 +35,15 @@ public class Cam
             update();
         }
     }
-    public float Focal { get; set; }
+    public float Focal
+    {
+        get => f;
+        set
+        {
+            f = value;
+            update();
+        }
+    }
     public int ScreenWidth { get; init; }
     public int ScreenHeight { get; init; }
 
@@ -83,6 +91,14 @@ public class Cam
         );
     }
     
+    float parametricNumerator = 0;
+    float dirLocProd = 0;
+    float deltaCenterX = 0;
+    float deltaCenterY = 0;
+    float deltaCenterZ = 0;
+    float nxSolutionDiv = 0;
+    float nySolutionDiv = 0;
+    float nzSolutionDiv = 0;
     private void update()
     {
         d = -(p.x * v.x + p.y * v.y + p.z * v.z);
@@ -100,21 +116,22 @@ public class Cam
             v.y * t + p.y,
             v.z * t + p.z
         );
+        dirLocProd = v.x * Location.x + v.y * Location.y + v.z * Location.z;
+        parametricNumerator = -(d - f + dirLocProd);
+        deltaCenterX = Location.x - renderCenter.x;
+        deltaCenterY = Location.y - renderCenter.y;
+        deltaCenterZ = Location.z - renderCenter.z;
+
+        nxSolutionDiv = m.y - m.x * n.y / n.x;
+        nySolutionDiv = m.z - m.y * n.z / n.y;
+        nzSolutionDiv = m.x - m.z * n.x / n.z;
     }
 
     private bool needDraw(Vertex q)
         => v.x * q.x + v.y * q.y + v.z * q.z + d > 0;
 
-    private PointF transform(Vertex v)
+    private PointF transform(Vertex P)
     {
-        // TODO: optmize
-        float a = this.v.x,
-            b = this.v.y,
-            c = this.v.z,
-            f = Focal;
-        var C = this.Location;
-        var P = v;
-
         // ax + by + cz + d - f = 0
         // (C - P) * t + C
 
@@ -125,51 +142,40 @@ public class Cam
 
         // a * (C.x + t * (P.x - C.x)) + b * (C.y + t * (P.y - C.y)) + c * (C.z + t * (P.z - C.z)) + d + f = 0
         // t = -(d - f + a * C.x + b * C.y + z * C.z) / (a * (P.x - C.x) + b * (P.y - C.y) + c * (P.z - C.z))
-        float t = -(d - f + a * C.x + b * C.y + c * C.z) 
-            / (a * (P.x - C.x) + b * (P.y - C.y) + c * (P.z - C.z));
+        float t = parametricNumerator / (v.x * P.x + v.y * P.y + v.z * P.z - dirLocProd);
         
-        float x = C.x + t * (P.x - C.x);
-        float y = C.y + t * (P.y - C.y);
-        float z = C.z + t * (P.z - C.z);
-
-        x -= renderCenter.x;
-        y -= renderCenter.y;
-        z -= renderCenter.z;
-
-        var nx = n.x;
-        var ny = n.y;
-        var nz = n.z;
-        var mx = m.x;
-        var my = m.y;
-        var mz = m.z;
+        float x = t * (P.x - Location.x) + deltaCenterX;
+        float y = t * (P.y - Location.y) + deltaCenterY;
+        float z = t * (P.z - Location.z) + deltaCenterZ;
 
         // a * nx + b * mx = x
         // a * ny + b * my = y
         // a * nz + b * mz = z
         
-        if (nx != 0)
+        float a, b;
+        if (n.x != 0)
         {
             // a = (x - b * mx) / nx
             // (x - b * mx) * ny / nx + b * my = y
             // b = (y - x * ny / nx) / (my - mx * ny / nx)
-            b = (y - x * ny / nx) / (my - mx * ny / nx);
-            a = (x - b * mx) / nx;
+            b = (y - x * n.y / n.x) / nxSolutionDiv;
+            a = (x - b * m.x) / n.x;
         }
-        else if (ny != 0)
+        else if (n.y != 0)
         {
             // a = (y - b * my) / ny
             // (y - b * my) * nz / ny + b * mz = z
             // b = (z - y * nz / ny) / (mz - my * nz / ny)
-            b = (z - y * nz / ny) / (mz - my * nz / ny);
-            a = (y - b * my) / ny;
+            b = (z - y * n.z / n.y) / nySolutionDiv;
+            a = (y - b * m.y) / n.y;
         }
         else
         {
             // a = (z - b * mz) / nz
             // (z - b * mz) * nx / nz + b * mx = x
             // b = (x - z * nx / nz) / (mx - mz * nx / nz)
-            b = (x - z * nx / nz) / (mx - mz * nx / nz);
-            a = (z - b * mz) / nz;
+            b = (x - z * n.x / n.z) / nzSolutionDiv;
+            a = (z - b * m.z) / n.z;
         }
         return new PointF(a + ScreenWidth / 2, b + ScreenHeight / 2);
     }
