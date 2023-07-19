@@ -15,7 +15,7 @@ public record Vertex(float x, float y, float z) : ITransformable<Vertex>
         => new (x, y * cosa - z * sina, y * sina + z * cosa);
 
     public Vertex RotateY(float cosa, float sina)
-        => new (x * cosa + z * sina, y, z * cosa - y * sina);
+        => new (x * cosa + z * sina, y, z * cosa - x * sina);
 
     public Vertex RotateZ(float cosa, float sina)
         => new (x * cosa - y * sina, y * cosa + x * sina, z);

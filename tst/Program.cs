@@ -127,11 +127,6 @@ Application.Idle += delegate
         {
             desloc = null;
         }
-        
-        scene.Meshes[0].RotateX(
-            MathF.Cos(.01f),
-            MathF.Sin(.01f)
-        );
 
         cam?.Render(scene);
         cam?.Draw(g);
