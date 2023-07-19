@@ -12,6 +12,9 @@ public class Cam
     private float d;
     private Vertex p;
     private Vector v;
+    private Vector u;
+    private Vector _u;
+    private Vector renderCenter;
 
     public Vertex Location
     {
@@ -35,10 +38,12 @@ public class Cam
     public int ScreenWidth { get; init; }
     public int ScreenHeight { get; init; }
 
-    public Cam(Vertex p, Vector v, float f, int wid, int hei)
+    public Cam(Vertex p, Vector v, Vector u, float f, int wid, int hei)
     {
         this.p = p;
         this.v = v;
+        this.u = u;
+        this._u = v * u;
         Focal = f;
         ScreenWidth = wid;
         ScreenHeight = hei;
@@ -78,7 +83,23 @@ public class Cam
     }
     
     private void update()
-        => d = -(p.x * v.x + p.y * v.y + p.z * v.z);
+    {
+        d = -(p.x * v.x + p.y * v.y + p.z * v.z);
+
+        // v.x * t + p.x = cx
+        // v.y * t + p.y = cy
+        // v.z * t + p.z = cz
+        // v.x * c.x + v.y * c.y + v.z * c.z + d + f = 0
+        // v.x^2 * t + v.x * p.x + v.y^2 * t + v.y * p.y + v.z^2 * t + v.z * p.z + d + f = 0
+        // t = -(v.x * p.x + v.y * p.y + v.z * p.z + d + f) /  (v.x^2 + v.y^2 + v.z^2)]
+        var t = -(v.x * p.x + v.y * p.y + v.z * p.z + d + Focal) 
+            / (v.x * v.x + v.y * v.y + v.z * v.z);
+        renderCenter = new (
+            v.x * t + p.x,
+            v.y * t + p.y,
+            v.z * t + p.z
+        );
+    }
 
     private bool needDraw(Vertex q)
         => v.x * q.x + v.y * q.y + v.z * q.z + d > 0;
@@ -103,12 +124,31 @@ public class Cam
 
         // a * (C.x + t * (C.x - P.x)) + b * (C.y + t * (C.y - P.y)) + c * (C.z + t * (C.z - P.z)) + d + f = 0
         // t = -(d + f + a * C.x + b * C.y + z * C.z) / (a * (C.x - P.x) + b * (C.y - P.y) + c * (C.z - P.z))
-        float t = -(d + f + a * C.x + b * C.y + c * C.z) / (a * (C.x - P.x) + b * (C.y - P.y) + c * (C.z - P.z));
+        float t = -(d + f + a * C.x + b * C.y + c * C.z) 
+            / (a * (C.x - P.x) + b * (C.y - P.y) + c * (C.z - P.z));
         
         float x = - C.x + t * (C.x - P.x);
         float y = - C.x + t * (C.x - P.x);
         float z = - C.x + t * (C.x - P.x);
 
-        return PointF.Empty;
+        // a * u.x + b * _u.x = x - renderCenter.x = dx
+        // a * u.y + b * _u.y = y - renderCenter.y = dy
+        // a = (dx - b * _u.x) / u.x
+        // b = (dy - a * u.y) / _u.y
+        float dx = x - renderCenter.x;
+        float dy = y - renderCenter.y;
+
+        if (u.x == 0)
+        {
+            b = (dy - (dx - b * _u.x) / u.x * u.y) / _u.y;
+            a = (dx - b * _u.x) / u.x;
+            return new PointF(a, b);
+        }
+        else
+        {
+            a = (dx - (dy - a * u.y) / _u.y * u.x) / _u.x;
+            b = (dy - a * u.y) / _u.y;
+            return new PointF(a, b);
+        }
     }
 }

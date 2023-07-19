@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 using Sharped;
 
-var cam = new Cam(Vertex.Origin, Vector.i, 5f, 640, 480);
+var cam = new Cam(Vertex.Origin, Vector.i, Vector.j, 5f, 640, 480);
 Scene scene = Scene.Create(
     new Mesh(
         new Face(
@@ -52,6 +52,7 @@ Application.Idle += delegate
     {
         cam.Render(scene);
         cam.Draw(g);
+        pb.Refresh();
         Application.DoEvents();
     }
 };
