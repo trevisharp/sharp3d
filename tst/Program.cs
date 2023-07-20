@@ -134,10 +134,22 @@ Application.Idle += delegate
         }
 
         if (rotate)
-            scene.Meshes[0].RotateZ(
-                MathF.Cos(0.1f),
-                MathF.Sin(0.1f)
-            );
+            scene.Meshes[0]
+                .Translate(-15, -1.67f, -1.67f)
+                .RotateX(
+                    MathF.Cos(0.01f),
+                    MathF.Sin(0.01f)
+                )
+                .RotateY(
+                    MathF.Cos(0.01f),
+                    MathF.Sin(0.01f)
+                )
+                .RotateZ(
+                    MathF.Cos(0.01f),
+                    MathF.Sin(0.01f)
+                )
+                .Translate(15, 1.67f, 1.67f);
+
 
         cam?.Render(scene);
         cam?.Draw(g);

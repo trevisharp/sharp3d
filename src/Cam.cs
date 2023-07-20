@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Sharped;
 
@@ -46,6 +48,7 @@ public class Cam
     }
     public int ScreenWidth { get; init; }
     public int ScreenHeight { get; init; }
+    public int MaxDistance { get; set; } = int.MaxValue;
 
     public Cam(Vertex p, Vector v, Vector u, float f, int wid, int hei)
     {
@@ -65,6 +68,7 @@ public class Cam
 
     public void Render(Scene scene)
     {
+        var objs = new List<(PointF[] pts, Material mat, int dis)>();
         g.Clear(Color.Black);
         foreach (var mesh in scene.Meshes)
         {
@@ -73,13 +77,35 @@ public class Cam
                 if (!needDraw(face.p) && !needDraw(face.q) && !needDraw(face.r))
                     continue;
 
-                g.DrawPolygon(Pens.White, new PointF[]
+                var distP = dist(face.p);
+                var distQ = dist(face.q);
+                var distR = dist(face.r);
+                var minDist = distP < distQ ?
+                    (distP < distR ? distP : distR) :
+                    (distQ < distR ? distQ : distR);
+                
+                if (minDist > MaxDistance)
+                    continue;
+                
+                var obj = new PointF[]
                 {
                     transform(face.p),
                     transform(face.q),
                     transform(face.r),
-                });
+                };
+
+                objs.Add((obj, mesh.Material, (int)minDist));
             }
+        }
+
+        var ordered = 
+            from obj in objs
+            orderby obj.dis
+            select (obj.pts, obj.mat);
+        
+        foreach (var obj in ordered)
+        {
+            g.DrawPolygon(Pens.White, obj.pts);
         }
     }
 
@@ -99,6 +125,7 @@ public class Cam
     float nxSolutionDiv = 0;
     float nySolutionDiv = 0;
     float nzSolutionDiv = 0;
+
     private void update()
     {
         d = -(p.x * v.x + p.y * v.y + p.z * v.z);
@@ -125,6 +152,14 @@ public class Cam
         nxSolutionDiv = m.y - m.x * n.y / n.x;
         nySolutionDiv = m.z - m.y * n.z / n.y;
         nzSolutionDiv = m.x - m.z * n.x / n.z;
+    }
+
+    private float dist(Vertex p)
+    {
+        var dx = p.x - Location.x;
+        var dy = p.y - Location.y;
+        var dz = p.z - Location.z;
+        return dx * dx + dy * dy + dz * dz;
     }
 
     private bool needDraw(Vertex q)

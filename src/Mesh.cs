@@ -7,6 +7,8 @@ namespace Sharped;
 /// </summary>
 public record Mesh(params Face[] faces) : ITransformable<Mesh>
 {
+    public Material Material { get; set; }
+
     public Mesh RotateX(float cosa, float sina)
     {
         for (int i = 0; i < faces.Length; i++)
