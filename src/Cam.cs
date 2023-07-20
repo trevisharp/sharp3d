@@ -154,6 +154,14 @@ public class Cam
         nzSolutionDiv = m.x - m.z * n.x / n.z;
     }
 
+    private void render(Graphics g, Scene scene, (Vertex[] pts, Material mat) obj)
+    {
+        foreach (var light in scene.Ligths)
+        {
+            
+        }
+    }
+
     private float dist(Vertex p)
     {
         var dx = p.x - Location.x;
