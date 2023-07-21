@@ -68,7 +68,7 @@ public class Cam
 
     public void Render(Scene scene)
     {
-        var objs = new List<(PointF[] pts, Material mat, int dis)>();
+        var objs = new List<(PointF[] pts, Face face, Material mat, int dis)>();
         g.Clear(Color.Black);
         foreach (var mesh in scene.Meshes)
         {
@@ -77,13 +77,13 @@ public class Cam
                 if (!needDraw(face.p) && !needDraw(face.q) && !needDraw(face.r))
                     continue;
 
-                var distP = dist(face.p);
-                var distQ = dist(face.q);
-                var distR = dist(face.r);
-                var minDist = distP < distQ ?
-                    (distP < distR ? distP : distR) :
-                    (distQ < distR ? distQ : distR);
+                var center = new Vertex(
+                    (face.p.x + face.q.x + face.r.x) / 3,
+                    (face.p.y + face.q.y + face.r.y) / 3,
+                    (face.p.z + face.q.z + face.r.z) / 3
+                );
                 
+                var minDist = dist(center);
                 if (minDist > MaxDistance)
                     continue;
                 
@@ -94,19 +94,17 @@ public class Cam
                     transform(face.r),
                 };
 
-                objs.Add((obj, mesh.Material, (int)minDist));
+                objs.Add((obj, face, mesh.Material, (int)minDist));
             }
         }
 
         var ordered = 
             from obj in objs
-            orderby obj.dis
-            select (obj.pts, obj.mat);
+            orderby obj.dis descending
+            select (obj.pts, obj.face, obj.mat);
         
         foreach (var obj in ordered)
-        {
-            g.DrawPolygon(Pens.White, obj.pts);
-        }
+            render(g, scene, obj);
     }
 
     public void Draw(Graphics g)
@@ -154,12 +152,34 @@ public class Cam
         nzSolutionDiv = m.x - m.z * n.x / n.z;
     }
 
-    private void render(Graphics g, Scene scene, (Vertex[] pts, Material mat) obj)
+    private void render(Graphics g, Scene scene, (PointF[] pts, Face face, Material mat) obj)
     {
         foreach (var light in scene.Ligths)
-        {
-            
-        }
+            drawLumination(g, light, obj.pts, obj.face, obj.mat);
+    }
+
+    private void drawLumination(Graphics g, Ligth ligth, PointF[] pts, Face face, Material mat)
+    {
+        var center = new Vertex(
+            (face.p.x + face.q.x + face.r.x) / 3,
+            (face.p.y + face.q.y + face.r.y) / 3,
+            (face.p.z + face.q.z + face.r.z) / 3
+        );
+        var dir1 = face.p - face.q;
+        var dir2 = face.p - face.r;
+        var norm = dir1 * dir2;
+
+        var v = center - ligth.p;
+        var u = center - Location;
+
+        var dist = v.mod;
+        var inner = (v * norm).mod;
+        var outer = (u * norm).mod;
+        
+        int value = (int)(dist / 2 > 255 ? 0 : 255 - dist / 2);
+        g.FillPolygon(new SolidBrush(
+            Color.FromArgb(value, value, value)
+        ), pts);
     }
 
     private float dist(Vertex p)

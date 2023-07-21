@@ -49,6 +49,7 @@ Scene scene = Scene.Create(
         )
     )
 );
+scene.Ligths.Add(new Ligth((15, 10, 5), Color.White, 10f));
 
 bool isRunning = true;
 
