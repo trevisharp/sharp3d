@@ -55,7 +55,6 @@ public class Cam
         this.p = p;
         this.v = v;
         this.n = u;
-        this.m = v * u;
         Focal = f;
         ScreenWidth = wid;
         ScreenHeight = hei;
@@ -93,6 +92,10 @@ public class Cam
                     transform(face.q),
                     transform(face.r),
                 };
+                
+                var rect = new RectangleF(-100, -100, ScreenWidth + 200, ScreenHeight + 200);
+                if (!rect.Contains(obj[0]) || !rect.Contains(obj[1]) || !rect.Contains(obj[2]))
+                    continue;
 
                 objs.Add((obj, face, mesh.Material, (int)minDist));
             }
@@ -126,6 +129,8 @@ public class Cam
 
     private void update()
     {
+        m = v * n;
+
         d = -(p.x * v.x + p.y * v.y + p.z * v.z);
 
         // v.x * t + p.x = cx
@@ -176,7 +181,7 @@ public class Cam
         var inner = (v * norm).mod;
         var outer = (u * norm).mod;
         
-        int value = (int)(dist / 2 > 255 ? 0 : 255 - dist / 2);
+        int value = (int)(dist / 4 > 255 ? 0 : 255 - dist / 4);
         g.FillPolygon(new SolidBrush(
             Color.FromArgb(value, value, value)
         ), pts);
@@ -265,21 +270,25 @@ public class Cam
 
     public Cam RotateX(float cosa, float sina)
     {
-        throw new System.NotImplementedException();
+        v = v.RotateX(cosa, sina);
+        n = n.RotateX(cosa, sina);
+        update();
+        return this;
     }
 
     public Cam RotateY(float cosa, float sina)
     {
-        throw new System.NotImplementedException();
+        v = v.RotateY(cosa, sina);
+        n = n.RotateY(cosa, sina);
+        update();
+        return this;
     }
 
     public Cam RotateZ(float cosa, float sina)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public Cam Scale(float x, float y, float z)
-    {
-        throw new System.NotImplementedException();
+        v = v.RotateZ(cosa, sina);
+        n = n.RotateZ(cosa, sina);
+        update();
+        return this;
     }
 }

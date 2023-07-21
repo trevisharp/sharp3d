@@ -1,15 +1,22 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 using Sharped;
 using Sharped.Meshes;
 
+using static Sharped.Vector;
+
 Cam cam = null;
-Scene scene = Scene.Create(
-    new Cube((50, 0, 0), 5)
-);
-scene.Ligths.Add(new Ligth((50, 10, 5), Color.White, 10f));
+List<Mesh> meshes = new List<Mesh>();
+
+for (int i = -30; i <= 30; i+= 10)
+    for (int j = -30; j <= 30; j += 10)
+        meshes.Add(Mesh.Cube(i, j, 0, 5f));
+
+Scene scene = Scene.Create(meshes);
+scene.Ligths.Add(new Ligth((0, 0, -10), Color.White, 10f));
 
 bool isRunning = true;
 
@@ -29,7 +36,7 @@ bool rotate = false;
 
 form.Load += delegate
 {
-    cam = new Cam(Vertex.Origin + 20 * Vector.j, Vector.i, Vector.j, 20f, pb.Width, pb.Height);
+    cam = new Cam(Vertex.Origin - 15 * k, i, j, 200f, pb.Width, pb.Height);
     bmp = new Bitmap(pb.Width, pb.Height);
     g = Graphics.FromImage(bmp);
     pb.Image = bmp;
@@ -45,11 +52,27 @@ form.KeyDown += (o, e) =>
             break;
         
         case Keys.W:
-            cam.Translate(0.1f, 0, 0);
+            cam.Translate(1, 0, 0);
+            break;
+        
+        case Keys.S:
+            cam.Translate(-1, 0, 0);
+            break;
+        
+        case Keys.D:
+            cam.Translate(0, 1, 0);
+            break;
+        
+        case Keys.A:
+            cam.Translate(0, -1, 0);
             break;
         
         case Keys.Space:
-            rotate = !rotate;
+            cam.Translate(0, 0, -1);
+            break;
+        
+        case Keys.ShiftKey:
+            cam.Translate(0, 0, 1);
             break;
     }
 };
@@ -62,7 +85,28 @@ pb.MouseDown += (o, e) => isDown = true;
 
 pb.MouseUp += (o, e) => isDown = false;
 
-pb.MouseMove += (o, e) => cursor = e.Location;
+PointF? center = null;
+pb.MouseMove += (o, e) =>
+{
+    cursor = e.Location;
+
+    if (center is not null)
+    {
+        // var dy = center.Value.Y - cursor.Y;
+        // var angle = dy / 100f;
+        // var sin = MathF.Sin(angle);
+        // var cos = MathF.Cos(angle);
+        // cam.RotateY(cos, sin);
+
+        var dy = center.Value.Y - cursor.Y;
+        var angle = dy / 100f;
+        var sin = MathF.Sin(angle);
+        var cos = MathF.Cos(angle);
+        cam.RotateZ(cos, sin);
+    }
+
+    center = cursor;
+};
 
 pb.MouseWheel += (o, e) =>
 {

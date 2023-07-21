@@ -7,6 +7,15 @@ public record Vector(float x, float y, float z)
 {
     public float mod => x * x + y * y + z * z;
 
+    public Vector RotateX(float cosa, float sina)
+        => new (x, y * cosa - z * sina, y * sina + z * cosa);
+
+    public Vector RotateY(float cosa, float sina)
+        => new (x * cosa + z * sina, y, z * cosa - x * sina);
+
+    public Vector RotateZ(float cosa, float sina)
+        => new (x * cosa - y * sina, y * cosa + x * sina, z);
+    
     public override string ToString()
         => $"P = ({x:N3}, {y:N3}, {z:N3})";
 

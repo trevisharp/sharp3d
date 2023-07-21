@@ -2,6 +2,8 @@ using System.Text;
 
 namespace Sharped;
 
+using Meshes;
+
 /// <summary>
 /// Represents a mutable set of faces/polygons.
 /// </summary>
@@ -57,4 +59,7 @@ public record Mesh(params Face[] faces) : ITransformable<Mesh>
 
         return sb.ToString();
     }
+
+    public static Mesh Cube(float x, float y, float z, float size)
+        => new Cube((x, y, z), size);
 }

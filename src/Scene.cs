@@ -16,4 +16,12 @@ public class Scene
 
         return scene;
     }
+    public static Scene Create(IEnumerable<Mesh> meshes)
+    {
+        Scene scene = new Scene();
+        
+        scene.Meshes.AddRange(meshes);
+
+        return scene;
+    }
 }
