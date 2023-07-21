@@ -82,7 +82,7 @@ public class Cam
                     (face.p.y + face.q.y + face.r.y) / 3,
                     (face.p.z + face.q.z + face.r.z) / 3
                 );
-                
+
                 var minDist = dist(center);
                 if (minDist > MaxDistance)
                     continue;
@@ -243,13 +243,23 @@ public class Cam
         return new PointF(a + ScreenWidth / 2, b + ScreenHeight / 2);
     }
 
-    public void Translate(float x, float y)
+    public void Move(float x, float y)
     {
         this.Location = this.Location with
         {
             x = this.Location.x - 10 * (x * n.x + y * m.x) / Focal,
             y = this.Location.y - 10 * (x * n.y + y * m.y) / Focal,
             z = this.Location.z - 10 * (x * n.z + y * m.z) / Focal
+        };
+    }
+
+    public void Translate(float dx, float dy, float dz)
+    {
+        this.Location = this.Location with
+        {
+            x = this.Location.x + dx,
+            y = this.Location.y + dy,
+            z = this.Location.z + dz
         };
     }
 

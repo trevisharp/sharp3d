@@ -7,51 +7,9 @@ using Sharped.Meshes;
 
 Cam cam = null;
 Scene scene = Scene.Create(
-    new Cube((15, 0, 0), 5)
-    // new Mesh(
-    //     new Face(
-    //         (10, 0, 0),
-    //         (10, 0, 5),
-    //         (10, 5, 0)
-    //     ),
-    //     new Face(
-    //         (10, 0, 0),
-    //         (10, 0, 5),
-    //         (20, 0, 0)
-    //     ),
-    //     new Face(
-    //         (10, 0, 5),
-    //         (20, 0, 0),
-    //         (20, 0, 5)
-    //     ),
-    //     new Face(
-    //         (20, 0, 0),
-    //         (20, 0, 5),
-    //         (20, 5, 0)
-    //     ),
-    //     new Face(
-    //         (10, 0, 0),
-    //         (10, 5, 0),
-    //         (20, 0, 0)
-    //     ),
-    //     new Face(
-    //         (10, 5, 0),
-    //         (20, 0, 0),
-    //         (20, 5, 0)
-    //     ),
-    //     new Face(
-    //         (10, 0, 5),
-    //         (10, 5, 0),
-    //         (20, 5, 0)
-    //     ),
-    //     new Face(
-    //         (10, 0, 5),
-    //         (20, 0, 5),
-    //         (20, 5, 0)
-    //     )
-    // )
+    new Cube((50, 0, 0), 5)
 );
-scene.Ligths.Add(new Ligth((15, 10, 5), Color.White, 10f));
+scene.Ligths.Add(new Ligth((50, 10, 5), Color.White, 10f));
 
 bool isRunning = true;
 
@@ -71,7 +29,7 @@ bool rotate = false;
 
 form.Load += delegate
 {
-    cam = new Cam(Vertex.Origin, Vector.i, Vector.j, 20f, pb.Width, pb.Height);
+    cam = new Cam(Vertex.Origin + 20 * Vector.j, Vector.i, Vector.j, 20f, pb.Width, pb.Height);
     bmp = new Bitmap(pb.Width, pb.Height);
     g = Graphics.FromImage(bmp);
     pb.Image = bmp;
@@ -84,6 +42,10 @@ form.KeyDown += (o, e) =>
         case Keys.Escape:
             isRunning = false;
             Application.Exit();
+            break;
+        
+        case Keys.W:
+            cam.Translate(0.1f, 0, 0);
             break;
         
         case Keys.Space:
@@ -127,7 +89,7 @@ Application.Idle += delegate
             var dx = cursor.X - desloc.Value.X;
             var dy = cursor.Y - desloc.Value.Y;
 
-            cam.Translate(dx, dy);
+            cam.Move(dx, dy);
 
             desloc = cursor;
         }
