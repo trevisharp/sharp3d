@@ -26,6 +26,9 @@ public record Vertex(float x, float y, float z) : ITransformable<Vertex>
     public static Vertex operator +(Vertex p, Vector v)
         => new (p.x + v.x, p.y + v.y, p.z + v.z);
     
+    public static Vertex operator -(Vertex p, Vector v)
+        => new (p.x - v.x, p.y - v.y, p.z - v.z);
+    
     public static Vertex operator +(Vector v, Vertex p)
         => new (p.x + v.x, p.y + v.y, p.z + v.z);
 

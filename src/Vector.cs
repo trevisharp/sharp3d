@@ -28,6 +28,9 @@ public record Vector(float x, float y, float z)
     public static Vector operator *(float a, Vector v)
         => new (a * v.x, a * v.y, a * v.z);
     
+    public static Vector operator /(Vector v, float a)
+        => new (v.x / a, v.y / a, v.z / a);
+    
     public static Vector operator *(Vector u, Vector v)
         => new (
         u.y * v.z - u.z * v.y, 

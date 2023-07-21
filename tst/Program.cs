@@ -3,51 +3,53 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Sharped;
+using Sharped.Meshes;
 
 Cam cam = null;
 Scene scene = Scene.Create(
-    new Mesh(
-        new Face(
-            (10, 0, 0),
-            (10, 0, 5),
-            (10, 5, 0)
-        ),
-        new Face(
-            (10, 0, 0),
-            (10, 0, 5),
-            (20, 0, 0)
-        ),
-        new Face(
-            (10, 0, 5),
-            (20, 0, 0),
-            (20, 0, 5)
-        ),
-        new Face(
-            (20, 0, 0),
-            (20, 0, 5),
-            (20, 5, 0)
-        ),
-        new Face(
-            (10, 0, 0),
-            (10, 5, 0),
-            (20, 0, 0)
-        ),
-        new Face(
-            (10, 5, 0),
-            (20, 0, 0),
-            (20, 5, 0)
-        ),
-        new Face(
-            (10, 0, 5),
-            (10, 5, 0),
-            (20, 5, 0)
-        ),
-        new Face(
-            (10, 0, 5),
-            (20, 0, 5),
-            (20, 5, 0)
-        )
-    )
+    new Cube((15, 0, 0), 5)
+    // new Mesh(
+    //     new Face(
+    //         (10, 0, 0),
+    //         (10, 0, 5),
+    //         (10, 5, 0)
+    //     ),
+    //     new Face(
+    //         (10, 0, 0),
+    //         (10, 0, 5),
+    //         (20, 0, 0)
+    //     ),
+    //     new Face(
+    //         (10, 0, 5),
+    //         (20, 0, 0),
+    //         (20, 0, 5)
+    //     ),
+    //     new Face(
+    //         (20, 0, 0),
+    //         (20, 0, 5),
+    //         (20, 5, 0)
+    //     ),
+    //     new Face(
+    //         (10, 0, 0),
+    //         (10, 5, 0),
+    //         (20, 0, 0)
+    //     ),
+    //     new Face(
+    //         (10, 5, 0),
+    //         (20, 0, 0),
+    //         (20, 5, 0)
+    //     ),
+    //     new Face(
+    //         (10, 0, 5),
+    //         (10, 5, 0),
+    //         (20, 5, 0)
+    //     ),
+    //     new Face(
+    //         (10, 0, 5),
+    //         (20, 0, 5),
+    //         (20, 5, 0)
+    //     )
+    // )
 );
 scene.Ligths.Add(new Ligth((15, 10, 5), Color.White, 10f));
 
@@ -136,20 +138,20 @@ Application.Idle += delegate
 
         if (rotate)
             scene.Meshes[0]
-                .Translate(-15, -1.67f, -1.67f)
+                .Translate(-15, 0, 0)
                 .RotateX(
                     MathF.Cos(0.01f),
                     MathF.Sin(0.01f)
                 )
-                .RotateY(
-                    MathF.Cos(0.01f),
-                    MathF.Sin(0.01f)
-                )
-                .RotateZ(
-                    MathF.Cos(0.01f),
-                    MathF.Sin(0.01f)
-                )
-                .Translate(15, 1.67f, 1.67f);
+                // .RotateY(
+                //     MathF.Cos(0.01f),
+                //     MathF.Sin(0.01f)
+                // )
+                // .RotateZ(
+                //     MathF.Cos(0.01f),
+                //     MathF.Sin(0.01f)
+                // )
+                .Translate(15, 0, 0);
 
 
         cam?.Render(scene);
