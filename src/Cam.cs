@@ -93,8 +93,7 @@ public class Cam
                     transform(face.r),
                 };
                 
-                var rect = new RectangleF(-100, -100, ScreenWidth + 200, ScreenHeight + 200);
-                if (!rect.Contains(obj[0]) || !rect.Contains(obj[1]) || !rect.Contains(obj[2]))
+                if (testSkipPoint(obj))
                     continue;
 
                 objs.Add((obj, face, mesh.Material, (int)minDist));
@@ -177,14 +176,58 @@ public class Cam
         var v = center - ligth.p;
         var u = center - Location;
 
-        var dist = v.mod;
+        var dist = v.mod / 10;
         var inner = (v * norm).mod;
         var outer = (u * norm).mod;
         
-        int value = (int)(dist / 4 > 255 ? 0 : 255 - dist / 4);
+        int value = (int)(dist > 255 ? 0 : 255 - dist);
         g.FillPolygon(new SolidBrush(
             Color.FromArgb(value, value, value)
         ), pts);
+    }
+
+    private bool testSkipPoint(PointF[] pts)
+    {
+        float limit = 50;
+        var rect = new RectangleF(0, 0,
+            ScreenWidth, ScreenHeight
+        );
+        var bigRect = new RectangleF(
+            -limit, -limit,
+            ScreenWidth + 2 * limit,
+            ScreenHeight + 2 * limit
+        );
+        float minx = float.MaxValue,
+            maxx = float.MinValue,
+            miny = float.MaxValue,
+            maxy = float.MinValue; 
+        int outCount = 0;
+        
+        for (int i = 0; i < pts.Length; i++)
+        {
+            var pt = pts[i];
+            var x = pt.X;
+            var y = pt.Y;
+
+            if (rect.Contains(pt))
+                continue;
+            
+            if (!bigRect.Contains(pt))
+                return true;
+            
+            outCount++;
+            
+            if (x < minx) minx = x;
+            if (x > maxx) maxx = x;
+            
+            if (y < miny) miny = y;
+            if (y > maxy) maxy = y;
+        }
+
+
+        return outCount > 2 ||
+            (maxx - minx) > ScreenWidth + limit ||
+            (maxy - miny) > ScreenHeight + limit;
     }
 
     private float dist(Vertex p)

@@ -4,15 +4,14 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 
 using Sharped;
-using Sharped.Meshes;
 
 using static Sharped.Vector;
 
 Cam cam = null;
 List<Mesh> meshes = new List<Mesh>();
 
-for (int i = -30; i <= 30; i+= 10)
-    for (int j = -30; j <= 30; j += 10)
+for (int i = -60; i <= 60; i+= 10)
+    for (int j = -60; j <= 60; j += 10)
         meshes.Add(Mesh.Cube(i, j, 0, 5f));
 
 Scene scene = Scene.Create(meshes);
@@ -92,17 +91,17 @@ pb.MouseMove += (o, e) =>
 
     if (center is not null)
     {
-        // var dy = center.Value.Y - cursor.Y;
-        // var angle = dy / 100f;
-        // var sin = MathF.Sin(angle);
-        // var cos = MathF.Cos(angle);
-        // cam.RotateY(cos, sin);
-
         var dy = center.Value.Y - cursor.Y;
         var angle = dy / 100f;
         var sin = MathF.Sin(angle);
         var cos = MathF.Cos(angle);
-        cam.RotateZ(cos, sin);
+        cam.RotateY(cos, sin);
+
+        // var dy = center.Value.Y - cursor.Y;
+        // var angle = dy / 100f;
+        // var sin = MathF.Sin(angle);
+        // var cos = MathF.Cos(angle);
+        // cam.RotateZ(cos, sin);
     }
 
     center = cursor;
